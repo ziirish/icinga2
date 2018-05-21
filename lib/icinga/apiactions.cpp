@@ -112,6 +112,7 @@ Dictionary::Ptr ApiActions::ProcessCheckResult(const ConfigObject::Ptr& object,
 		cr->SetExecutionEnd(HttpUtility::GetLastParameter(params, "execution_end"));
 
 	cr->SetCheckSource(HttpUtility::GetLastParameter(params, "check_source"));
+	cr->SetSchedulingSource(HttpUtility::GetLastParameter(params, "scheduling_source"));
 
 	Value perfData = params->Get("performance_data");
 

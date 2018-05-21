@@ -257,6 +257,9 @@ bool Service::ResolveMacro(const String& macro, const CheckResult::Ptr& cr, Valu
 		} else if (macro == "check_source") {
 			*result = cr->GetCheckSource();
 			return true;
+		} else if (macro == "scheduling_source") {
+			*result = cr->GetSchedulingSource();
+			return true;
 		}
 	}
 
@@ -272,4 +275,3 @@ std::pair<Host::Ptr, Service::Ptr> icinga::GetHostService(const Checkable::Ptr& 
 	else
 		return std::make_pair(static_pointer_cast<Host>(checkable), nullptr);
 }
-

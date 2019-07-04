@@ -10,9 +10,9 @@ ApplyRule::RuleMap ApplyRule::m_Rules;
 ApplyRule::TypeMap ApplyRule::m_Types;
 
 ApplyRule::ApplyRule(String targetType, String name, std::shared_ptr<Expression> expression,
-	std::shared_ptr<Expression> filter, String package, String fkvar, String fvvar, std::shared_ptr<Expression> fterm,
+	std::shared_ptr<Expression> filter, String zone, String package, String fkvar, String fvvar, std::shared_ptr<Expression> fterm,
 	bool ignoreOnError, DebugInfo di, Dictionary::Ptr scope)
-	: m_TargetType(std::move(targetType)), m_Name(std::move(name)), m_Expression(std::move(expression)), m_Filter(std::move(filter)), m_Package(std::move(package)), m_FKVar(std::move(fkvar)),
+	: m_TargetType(std::move(targetType)), m_Name(std::move(name)), m_Expression(std::move(expression)), m_Filter(std::move(filter)), m_Zone(std::move(zone)), m_Package(std::move(package)), m_FKVar(std::move(fkvar)),
 	m_FVVar(std::move(fvvar)), m_FTerm(std::move(fterm)), m_IgnoreOnError(ignoreOnError), m_DebugInfo(std::move(di)), m_Scope(std::move(scope)), m_HasMatches(false)
 { }
 
@@ -34,6 +34,11 @@ std::shared_ptr<Expression> ApplyRule::GetExpression() const
 std::shared_ptr<Expression> ApplyRule::GetFilter() const
 {
 	return m_Filter;
+}
+
+String ApplyRule::GetZone() const
+{
+	return m_Zone;
 }
 
 String ApplyRule::GetPackage() const
@@ -72,10 +77,10 @@ Dictionary::Ptr ApplyRule::GetScope() const
 }
 
 void ApplyRule::AddRule(const String& sourceType, const String& targetType, const String& name,
-	const std::shared_ptr<Expression>& expression, const std::shared_ptr<Expression>& filter, const String& package, const String& fkvar,
+	const std::shared_ptr<Expression>& expression, const std::shared_ptr<Expression>& filter, const String& zone, const String& package, const String& fkvar,
 	const String& fvvar, const std::shared_ptr<Expression>& fterm, bool ignoreOnError, const DebugInfo& di, const Dictionary::Ptr& scope)
 {
-	m_Rules[sourceType].push_back(ApplyRule(targetType, name, expression, filter, package, fkvar, fvvar, fterm, ignoreOnError, di, scope));
+	m_Rules[sourceType].push_back(ApplyRule(targetType, name, expression, filter, zone, package, fkvar, fvvar, fterm, ignoreOnError, di, scope));
 }
 
 bool ApplyRule::EvaluateFilter(ScriptFrame& frame) const

@@ -23,6 +23,7 @@ public:
 	String GetName() const;
 	std::shared_ptr<Expression> GetExpression() const;
 	std::shared_ptr<Expression> GetFilter() const;
+	String GetZone() const;
 	String GetPackage() const;
 	String GetFKVar() const;
 	String GetFVVar() const;
@@ -36,7 +37,7 @@ public:
 	bool EvaluateFilter(ScriptFrame& frame) const;
 
 	static void AddRule(const String& sourceType, const String& targetType, const String& name, const std::shared_ptr<Expression>& expression,
-		const std::shared_ptr<Expression>& filter, const String& package, const String& fkvar, const String& fvvar, const std::shared_ptr<Expression>& fterm,
+		const std::shared_ptr<Expression>& filter, const String& zone, const String& package, const String& fkvar, const String& fvvar, const std::shared_ptr<Expression>& fterm,
 		bool ignoreOnError, const DebugInfo& di, const Dictionary::Ptr& scope);
 	static std::vector<ApplyRule>& GetRules(const String& type);
 
@@ -52,6 +53,7 @@ private:
 	String m_Name;
 	std::shared_ptr<Expression> m_Expression;
 	std::shared_ptr<Expression> m_Filter;
+	String m_Zone;
 	String m_Package;
 	String m_FKVar;
 	String m_FVVar;
@@ -65,7 +67,7 @@ private:
 	static RuleMap m_Rules;
 
 	ApplyRule(String targetType, String name, std::shared_ptr<Expression> expression,
-		std::shared_ptr<Expression> filter, String package, String fkvar, String fvvar, std::shared_ptr<Expression> fterm,
+		std::shared_ptr<Expression> filter, String zone, String package, String fkvar, String fvvar, std::shared_ptr<Expression> fterm,
 		bool ignoreOnError, DebugInfo di, Dictionary::Ptr scope);
 };
 

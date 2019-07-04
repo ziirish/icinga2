@@ -1229,7 +1229,7 @@ apply:
 		std::unique_ptr<Expression> fterm{context->m_FTerm.top()};
 		context->m_FTerm.pop();
 
-		$$ = new ApplyExpression(type, target, std::unique_ptr<Expression>($4), std::move(filter), context->GetPackage(), fkvar, fvvar, std::move(fterm), std::move(*$7), $8, std::unique_ptr<Expression>($10), DebugInfoRange(@2, @8));
+		$$ = new ApplyExpression(type, target, std::unique_ptr<Expression>($4), std::move(filter), context->GetZone(), context->GetPackage(), fkvar, fvvar, std::move(fterm), std::move(*$7), $8, std::unique_ptr<Expression>($10), DebugInfoRange(@2, @8));
 		delete $7;
 	}
 	;

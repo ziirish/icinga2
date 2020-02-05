@@ -265,11 +265,15 @@ void Checkable::ProcessCheckResult(const CheckResult::Ptr& cr, const MessageOrig
 
 	bool stateChange;
 
-	/* Exception on state change calculation for hosts. */
-	if (checkableType == CheckableService)
-		stateChange = (old_state != new_state);
-	else
-		stateChange = (Host::CalculateState(old_state) != Host::CalculateState(new_state));
+	if (old_cr) {
+		/* Exception on state change calculation for hosts. */
+		if (checkableType == CheckableService)
+			stateChange = (old_state != new_state);
+		else
+			stateChange = (Host::CalculateState(old_state) != Host::CalculateState(new_state));
+	} else {
+		stateChange = true;
+	}
 
 	/* Store the current last state change for the next iteration. */
 	SetPreviousStateChange(GetLastStateChange());

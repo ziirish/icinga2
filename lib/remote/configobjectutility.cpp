@@ -159,6 +159,15 @@ bool ConfigObjectUtility::CreateObject(const Type::Ptr& type, const String& full
 		return false;
 	}
 
+	{
+		auto configType (dynamic_cast<ConfigType*>(type.get()));
+
+		if (configType && configType->GetObject(fullName)) {
+			errors->Add("Object '" + fullName + "' already exists.");
+			return false;
+		}
+	}
+
 	String path;
 
 	try {

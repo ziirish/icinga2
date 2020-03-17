@@ -4,6 +4,7 @@
 #define PROCESS_H
 
 #include "base/i2-base.hpp"
+#include "base/atomic.hpp"
 #include "base/dictionary.hpp"
 #include <iosfwd>
 #include <deque>
@@ -78,6 +79,10 @@ private:
 	Dictionary::Ptr m_ExtraEnvironment;
 
 	double m_Timeout;
+#ifndef _WIN32
+	Atomic<bool> m_Terminated;
+#endif /* _WIN32 */
+
 	bool m_AdjustPriority;
 
 	ProcessHandle m_Process;

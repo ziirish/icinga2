@@ -49,10 +49,13 @@ static boost::once_flag l_ProcessOnceFlag = BOOST_ONCE_INIT;
 static boost::once_flag l_SpawnHelperOnceFlag = BOOST_ONCE_INIT;
 
 Process::Process(Process::Arguments arguments, Dictionary::Ptr extraEnvironment)
-	: m_Arguments(std::move(arguments)), m_ExtraEnvironment(std::move(extraEnvironment)), m_Timeout(600), m_AdjustPriority(false)
+	: m_Arguments(std::move(arguments)), m_ExtraEnvironment(std::move(extraEnvironment)), m_Timeout(600)
 #ifdef _WIN32
 	, m_ReadPending(false), m_ReadFailed(false), m_Overlapped()
+#else /* _WIN32 */
+	, m_Terminated(false)
 #endif /* _WIN32 */
+	, m_AdjustPriority(false)
 {
 #ifdef _WIN32
 	m_Overlapped.hEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
@@ -1015,12 +1018,34 @@ bool Process::DoEvents()
 #endif /* _WIN32 */
 
 	if (m_Timeout != 0) {
-		double timeout = m_Result.ExecutionStart + m_Timeout;
+		auto now (Utility::GetTime());
 
-		if (timeout < Utility::GetTime()) {
+#ifndef _WIN32
+		{
+			auto deadline (m_Result.ExecutionStart + m_Timeout);
+
+			if (deadline < now && !m_Terminated.exchange(true)) {
+				Log(LogWarning, "Process")
+					<< "Terminating process " << m_PID << " (" << PrettyPrintArguments(m_Arguments)
+					<< ") after timeout of " << m_Timeout << " seconds";
+
+				int error = ProcessKill(m_Process, SIGTERM);
+				if (error) {
+					Log(LogWarning, "Process")
+						<< "Couldn't terminate the process " << m_PID << " (" << PrettyPrintArguments(m_Arguments)
+						<< "): [errno " << error << "] " << strerror(error);
+				}
+			}
+		}
+#endif /* _WIN32 */
+
+		auto timeout (m_Timeout * 1.1);
+		auto deadline (m_Result.ExecutionStart + timeout);
+
+		if (deadline < now) {
 			Log(LogWarning, "Process")
 				<< "Killing process group " << m_PID << " (" << PrettyPrintArguments(m_Arguments)
-				<< ") after timeout of " << m_Timeout << " seconds";
+				<< ") after timeout of " << timeout << " seconds";
 
 			m_OutputStream << "<Timeout exceeded.>";
 #ifdef _WIN32

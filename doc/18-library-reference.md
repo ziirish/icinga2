@@ -54,6 +54,65 @@ true
 false
 ```
 
+### regex\_submatch <a id="global-functions-regex_submatch"></a>
+
+Signature:
+
+```
+function regex_submatch(pattern, value)
+```
+
+If the regular expression `pattern` matches the string `value`,
+returns an array with the first match inside the whole string
+and the submatches of the match declared with parentheses.
+
+Otherwise returns null.
+
+Examples:
+
+```
+$ icinga2 console
+Icinga 2 (version: v2.13.0)
+<1> => regex_submatch("foo", "bar")
+null
+<2> => regex_submatch("foo", "foo")
+[ "foo" ]
+<3> => regex_submatch("f(o)o", "foo")
+[ "foo", "o" ]
+```
+
+```
+object Host "example.com" {
+  check_command = "passive"
+
+  vars.http_urls = [
+    "http://monitor.example.com/icingaweb2",
+    "https://logs.example.com",
+    "http://cloud.example.com:5000"
+  ]
+}
+
+apply Service "http-" for (url in host.vars.http_urls) {
+  check_command = "http"
+
+  var match = regex_submatch({{{http(s?)://([^:/]+)((?::\d+)?)((?:/.*)?)}}}, url)
+
+  if (match[1]) {
+    vars.http_ssl = true
+  }
+
+  vars.http_address = match[2]
+
+  if (match[3]) {
+    vars.http_port = match[3].substr(1)
+  }
+
+  if (match[4]) {
+    vars.http_uri = match[4]
+  }
+}
+```
+
 ### match <a id="global-functions-match"></a>
 
 Signature:

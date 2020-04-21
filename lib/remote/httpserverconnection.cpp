@@ -253,6 +253,7 @@ bool HandleAccessControl(
 				allowOriginHeader.Done();
 
 				response.set(http::field::access_control_allow_credentials, "true");
+				response.set(http::field::access_control_allow_origin, String(headerAllowOrigin->Join(", ")));
 
 				if (request.method() == http::verb::options && !request[http::field::access_control_request_method].empty()) {
 					response.result(http::status::ok);

@@ -648,6 +648,8 @@ object ScheduledDowntime "some-downtime" {
 }
 ```
 
+Icinga 2 takes the OS' time zone including DST changes into account.
+
 Configuration Attributes:
 
   Name                      | Type                  | Description
@@ -840,6 +842,8 @@ object TimePeriod "exampledays" {
     }
 }
 ```
+
+Icinga 2 takes the OS' time zone including DST changes into account.
 
 Additional examples can be found [here](08-advanced-topics.md#timeperiods).
 

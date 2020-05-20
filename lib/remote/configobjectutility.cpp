@@ -8,11 +8,13 @@
 #include "base/configwriter.hpp"
 #include "base/exception.hpp"
 #include "base/dependencygraph.hpp"
+#include "base/tlsutility.hpp"
 #include "base/utility.hpp"
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/system/error_code.hpp>
 #include <fstream>
+#include <utility>
 
 using namespace icinga;
 
@@ -35,8 +37,9 @@ String ConfigObjectUtility::GetObjectConfigPath(const Type::Ptr& type, const Str
 	/* This may throw an exception the caller above must handle. */
 	String prefix = GetConfigDir();
 
-	return prefix + "/conf.d/" + typeDir +
-		"/" + EscapeName(fullName) + ".conf";
+	auto old (prefix + "/conf.d/" + typeDir + "/" + EscapeName(fullName) + ".conf");
+
+	return Utility::PathExists(old) ? std::move(old) : prefix + "/conf.d/" + typeDir + "/" + SHA1(fullName) + ".conf";
 }
 
 void ConfigObjectUtility::RepairPackage(const String& package)

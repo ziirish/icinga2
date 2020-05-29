@@ -11,6 +11,7 @@ jobs:
     name: .deb
 
     strategy:
+      fail-fast: false
       matrix:
         distro:
           - name: debian
@@ -123,6 +124,7 @@ jobs:
     name: .rpm
 
     strategy:
+      fail-fast: false
       matrix:
         distro:
           - name: centos

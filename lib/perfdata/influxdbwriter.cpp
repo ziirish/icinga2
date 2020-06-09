@@ -494,10 +494,18 @@ void InfluxdbWriter::Flush()
 
 	url->AddQueryElement("db", GetDatabase());
 	url->AddQueryElement("precision", "s");
-	if (!GetUsername().IsEmpty())
-		url->AddQueryElement("u", GetUsername());
-	if (!GetPassword().IsEmpty())
-		url->AddQueryElement("p", GetPassword());
+	if (!GetUsername().IsEmpty()) {
+		if (GetBasicAuth())
+			url->setUsername(GetUsername());
+		else
+			url->AddQueryElement("u", GetUsername());
+	}
+	if (!GetPassword().IsEmpty()) {
+		if (GetBasicAuth())
+			url->setPassword(GetPassword());
+		else
+			url->AddQueryElement("p", GetPassword());
+	}
 
 	http::request<http::string_body> request (http::verb::post, std::string(url->Format(true)), 10);
 

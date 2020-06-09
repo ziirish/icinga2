@@ -1636,6 +1636,7 @@ Configuration Attributes:
   database                  | String                | **Required.** InfluxDB database name. Defaults to `icinga2`.
   username                  | String                | **Optional.** InfluxDB user name. Defaults to `none`.
   password                  | String                | **Optional.** InfluxDB user password.  Defaults to `none`.
+  basic\_auth               | Boolean               | **Optional.** Whether to use Basic Authentication mechanism instead of query parameters. Defaults to `false`.
   ssl\_enable               | Boolean               | **Optional.** Whether to use a TLS stream. Defaults to `false`.
   ssl\_ca\_cert             | String                | **Optional.** Path to CA certificate to validate the remote host.
   ssl\_cert                 | String                | **Optional.** Path to host certificate to present to the remote host for mutual verification.
